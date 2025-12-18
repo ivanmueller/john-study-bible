@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Bible - Gospel of John</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --oldtestament: #b8860b;
+            --oldtestament-bg: rgba(184, 134, 11, 0.08);
+            --ruleoffaith: #6a1b9a;
+            --ruleoffaith-bg: rgba(106, 27, 154, 0.08);
+            --liturgy: #922b21;
+            --liturgy-bg: rgba(146, 43, 33, 0.08);
+            --fathers: #1e8449;
+            --fathers-bg: rgba(30, 132, 73, 0.08);
+            --parallels: #1565c0;
+            --parallels-bg: rgba(21, 101, 192, 0.08);
+            
+            --text-dark: #1a1a1a;
+            --text-medium: #444;
+            --verse-num: #b22222;
+            --bg-page: #fefefe;
+            --bg-panel: #f9f9f9;
+            --bg-nested: #f4f4f4;
+            --border-light: #e0e0e0;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            background: var(--bg-page);
+            color: var(--text-dark);
+            font-size: 19px;
+            line-height: 1.75;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 50px 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-medium);
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Chapter Navigation */
+        .chapter-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px 15px;
+            background: var(--bg-panel);
+            border-radius: 0 0 4px 4px;
+        }
+        
+        .chapter-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            background: var(--bg-page);
+            color: var(--text-medium);
+            font-family: 'Crimson Pro', serif;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .chapter-btn:hover {
+            background: #fff3cd;
+            border-color: #b8860b;
+        }
+        
+        .chapter-btn.active {
+            background: #fff3cd;
+            border-color: var(--verse-num);
+            color: var(--verse-num);
+            font-weight: 600;
+        }
+        
+        /* Chapter Content */
+        .chapter-content {
+            display: none;
+        }
+        
+        .chapter-content.active {
+            display: block;
+        }
+        
+        .chapter-header {
+            font-family: 'Cinzel', serif;
+            font-size: 16px;
+            color: var(--text-medium);
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        /* Legend - always visible above chapters */
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 0;
+            font-size: 13px;
+            padding: 15px;
+            padding-bottom: 25px;
+            background: var(--bg-panel);
+            border-radius: 4px 4px 0 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .legend-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .legend-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-medium);
+            margin-bottom: 4px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-medium);
+        }
+        
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .legend-dot.oldtestament { background: var(--oldtestament); }
+        .legend-dot.ruleoffaith { background: var(--ruleoffaith); }
+        .legend-dot.liturgy { background: var(--liturgy); }
+        .legend-dot.fathers { background: transparent; border: 1px dashed var(--fathers); }
+        .legend-dot.parallels { background: transparent; border: 1px dashed var(--parallels); }
+        
+        /* Bible Text */
+        .bible-text { text-align: justify; }
+        
+        .paragraph {
+            margin-bottom: 20px;
+            text-indent: 1.5em;
+        }
+        
+        .paragraph:first-of-type { text-indent: 0; }
+        
+        .verse-num {
+            color: var(--verse-num);
+            font-weight: 600;
+            font-size: 14px;
+            vertical-align: super;
+            margin-right: 2px;
+            line-height: 1;
+        }
+        
+        /* Annotated verses */
+        .annotated {
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.2s ease;
+        }
+        
+        .annotated:hover { background: #fff3cd; }
+        .annotated.active { background: #fff3cd; }
+        
+        /* Margin indicators */
+        .margin-dots {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 1px;
+            margin-left: 3px;
+            margin-right: 1px;
+            vertical-align: top;
+            padding-top: 4px;
+            width: 5px;
+        }
+        
+        .margin-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+        }
+        
+        .margin-dot.oldtestament { background: var(--oldtestament); }
+        .margin-dot.ruleoffaith { background: var(--ruleoffaith); }
+        .margin-dot.liturgy { background: var(--liturgy); }
+        
+        /* Expanded Commentary */
+        .commentary-expanded {
+            display: none;
+            background: var(--bg-panel);
+            border-left: 3px solid var(--verse-num);
+            margin: 15px 0;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.65;
+        }
+        
+        .commentary-expanded.active { display: block; }
+        
+        .commentary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .commentary-ref {
+            font-family: 'Cinzel', serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--text-medium);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text-medium);
+            cursor: pointer;
+            padding: 0 5px;
+            line-height: 1;
+        }
+        
+        .close-btn:hover { color: var(--text-dark); }
+        
+        .commentary-section { margin-bottom: 18px; }
+        .commentary-section:last-child { margin-bottom: 0; }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .section-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .section-dot.oldtestament { background: var(--oldtestament); }
+        .section-dot.ruleoffaith { background: var(--ruleoffaith); }
+        .section-dot.liturgy { background: var(--liturgy); }
+        .section-dot.fathers { background: var(--fathers); }
+        .section-dot.parallels { background: var(--parallels); }
+        
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .section-title.oldtestament { color: var(--oldtestament); }
+        .section-title.ruleoffaith { color: var(--ruleoffaith); }
+        .section-title.liturgy { color: var(--liturgy); }
+        .section-title.fathers { color: var(--fathers); }
+        .section-title.parallels { color: var(--parallels); }
+        
+        .section-content {
+            padding-left: 16px;
+            color: var(--text-medium);
+        }
+        
+        .scripture-ref {
+            font-style: italic;
+            color: var(--oldtestament);
+        }
+        
+        .liturgy-tradition { margin-bottom: 8px; }
+        .liturgy-tradition:last-child { margin-bottom: 0; }
+        
+        .tradition-label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .tradition-label.west { color: #8b4513; }
+        .tradition-label.east { color: #4a148c; }
+        
+        /* Expandable nested sections */
+        .expandable-section {
+            margin-top: 15px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .expandable-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--bg-nested);
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .expandable-header:hover { background: #eee; }
+        
+        .expand-icon {
+            font-size: 12px;
+            color: var(--text-medium);
+            transition: transform 0.2s ease;
+            width: 12px;
+        }
+        
+        .expandable-header.open .expand-icon { transform: rotate(90deg); }
+        
+        .expandable-content {
+            display: none;
+            padding: 15px;
+            background: var(--bg-page);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        .expandable-content.open { display: block; }
+        
+        .consensus {
+            font-style: italic;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: var(--fathers-bg);
+            border-radius: 4px;
+        }
+        
+        .father-toggle {
+            font-size: 12px;
+            color: var(--fathers);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border: 1px solid var(--fathers);
+            border-radius: 3px;
+            background: transparent;
+            margin-top: 8px;
+        }
+        
+        .father-toggle:hover { background: var(--fathers-bg); }
+        
+        .father-quotes {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border-light);
+        }
+        
+        .father-quotes.open { display: block; }
+        
+        .father-quote {
+            margin-bottom: 12px;
+            padding-left: 12px;
+            border-left: 2px solid var(--fathers);
+        }
+        
+        .father-quote:last-child { margin-bottom: 0; }
+        
+        .father-name {
+            font-weight: 600;
+            color: var(--fathers);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .father-text {
+            font-style: italic;
+            font-size: 15px;
+        }
+        
+        .parallel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        .parallel-passage {
+            padding: 12px;
+            background: var(--parallels-bg);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .parallel-ref {
+            font-weight: 600;
+            color: var(--parallels);
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        
+        .parallel-text {
+            color: var(--text-medium);
+            line-height: 1.5;
+        }
+        
+        footer {
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-medium);
+        }
+        
+        .translation-note {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+        
+        @media (max-width: 600px) {
+            .container { padding: 30px 20px; }
+            body { font-size: 17px; }
+            .legend-group { flex-direction: column; gap: 8px; }
+            .parallel-grid { grid-template-columns: 1fr; }
+            .chapter-btn { width: 32px; height: 32px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>The Gospel According to John</h1>
+            <div class="subtitle">Reading Scripture Inside the Church</div>
+        </header>
+        
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-label">Primary Notes</div>
+            <div class="legend-group">
+                <div class="legend-item"><span class="legend-dot oldtestament"></span><span>Old Testament</span></div>
+                <div class="legend-item"><span class="legend-dot ruleoffaith"></span><span>Rule of Faith</span></div>
+                <div class="legend-item"><span class="legend-dot liturgy"></span><span>Liturgy</span></div>
+            </div>
+            <div class="legend-label" style="margin-top: 8px;">Expandable</div>
+            <div class="legend-group">
+                <div class="legend-item"><span class="legend-dot fathers"></span><span>Church Fathers</span></div>
+                <div class="legend-item"><span class="legend-dot parallels"></span><span>Canonical Parallels</span></div>
+            </div>
+        </div>
+        
+        <!-- Chapter Navigation -->
+        <div class="chapter-nav">
+            <button class="chapter-btn active" onclick="showChapter(1)">1</button>
+            <button class="chapter-btn" onclick="showChapter(2)">2</button>
+            <button class="chapter-btn" onclick="showChapter(3)">3</button>
+            <button class="chapter-btn" onclick="showChapter(4)">4</button>
+            <button class="chapter-btn" onclick="showChapter(5)">5</button>
+            <button class="chapter-btn" onclick="showChapter(6)">6</button>
+            <button class="chapter-btn" onclick="showChapter(7)">7</button>
+            <button class="chapter-btn" onclick="showChapter(8)">8</button>
+            <button class="chapter-btn" onclick="showChapter(9)">9</button>
+            <button class="chapter-btn" onclick="showChapter(10)">10</button>
+            <button class="chapter-btn" onclick="showChapter(11)">11</button>
+            <button class="chapter-btn" onclick="showChapter(12)">12</button>
+            <button class="chapter-btn" onclick="showChapter(13)">13</button>
+            <button class="chapter-btn" onclick="showChapter(14)">14</button>
+            <button class="chapter-btn" onclick="showChapter(15)">15</button>
+            <button class="chapter-btn" onclick="showChapter(16)">16</button>
+            <button class="chapter-btn" onclick="showChapter(17)">17</button>
+            <button class="chapter-btn" onclick="showChapter(18)">18</button>
+            <button class="chapter-btn" onclick="showChapter(19)">19</button>
+            <button class="chapter-btn" onclick="showChapter(20)">20</button>
+            <button class="chapter-btn" onclick="showChapter(21)">21</button>
+        </div>
+
+        <!-- Chapter 1 (with study notes) -->
+        <div class="chapter-content active" data-chapter="1" id="chapter-1">
+            <div class="chapter-header">CHAPTER I</div>
+            
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot ruleoffaith"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="1" onclick="toggleCommentary(1)"><span class="verse-num">1</span>In the beginning was the Word, and the Word was with God, and the Word was God.</span>
+                    <span class="verse-num">2</span>The same was in the beginning with God.
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span></span><span class="annotated" data-verse="3" onclick="toggleCommentary(3)"><span class="verse-num">3</span>All things were made by him: and without him was made nothing that was made.</span>
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="4" onclick="toggleCommentary(4)"><span class="verse-num">4</span>In him was life, and the life was the light of men.</span>
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="5" onclick="toggleCommentary(5)"><span class="verse-num">5</span>And the light shineth in darkness, and the darkness did not comprehend it.</span>
+                </p>
+                
+                <!-- Commentary for verse 1 -->
+                <div class="commentary-expanded" id="commentary-1">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:1</span>
+                        <button class="close-btn" onclick="toggleCommentary(1)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Genesis 1:1</span> — "In the beginning God created heaven and earth." John deliberately echoes the opening of Torah, identifying the Word as present and active at creation itself.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            The threefold confession—the Word's eternal existence, distinction from the Father, and full divinity—forms the scriptural foundation for Trinitarian and Christological faith. The Nicene-Constantinopolitan Creed confesses the Son as "true God from true God, begotten not made, consubstantial with the Father."
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> The Prologue (1:1–14) is read at Christmas Day Mass and formerly as the "Last Gospel" at every Traditional Latin Mass.
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> John 1:1–17 is the Gospel at Paschal Divine Liturgy, proclaiming the Light that darkness cannot overcome. Read in multiple languages at Agape Vespers.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                The Fathers unanimously teach that "In the beginning" refers not to a temporal origin but to the Word's eternal co-existence with the Father. The Word is begotten, not made; distinct in person, identical in essence.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"'Was' expresses eternity of being. For observe, he does not say 'In the beginning' the Word 'came into being,' but 'was.' This meaning of 'was' marks an essence that always is."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Augustine</span>
+                                    <span class="father-text">"'The Word was with God'—the Only-Begotten equal to the Father. 'The Word was God'—the same in substance, not different in nature."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Hilary of Poitiers</span>
+                                    <span class="father-text">"The Word transcends all periods of time; He is before the ages, before time, before all that can be conceived."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 3 -->
+                <div class="commentary-expanded" id="commentary-3">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:3</span>
+                        <button class="close-btn" onclick="toggleCommentary(3)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            That "all things were made by him" excludes the Word from the category of creatures. The Creed echoes this directly: "through whom all things were made." If all created things were made through the Word, the Word himself cannot be among the things made.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 4 -->
+                <div class="commentary-expanded" id="commentary-4">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:4</span>
+                        <button class="close-btn" onclick="toggleCommentary(4)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Psalm 36:9</span> — "With thee is the fountain of life; and in thy light we shall see light." Life and light are inseparable attributes of God.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 5 -->
+                <div class="commentary-expanded" id="commentary-5">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:5</span>
+                        <button class="close-btn" onclick="toggleCommentary(5)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Genesis 1:3–4</span> — God's first creative word is "Let there be light," and He separates light from darkness. The Light that enlightens every person has shone since creation itself.
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">6</span>There was a man sent from God, whose name was John.
+                    <span class="verse-num">7</span>This man came for a witness, to give testimony of the light, that all men might believe through him.
+                    <span class="verse-num">8</span>He was not the light, but was to give testimony of the light.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="9" onclick="toggleCommentary(9)"><span class="verse-num">9</span>That was the true light, which enlighteneth every man that cometh into this world.</span>
+                    <span class="verse-num">10</span>He was in the world, and the world was made by him, and the world knew him not.
+                    <span class="verse-num">11</span>He came unto his own, and his own received him not.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="12" onclick="toggleCommentary(12)"><span class="verse-num">12</span>But as many as received him, he gave them power to be made the sons of God, to them that believe in his name.</span>
+                    <span class="verse-num">13</span>Who are born, not of blood, nor of the will of the flesh, nor of the will of man, but of God.
+                </p>
+                
+                <!-- Commentary for verse 9 -->
+                <div class="commentary-expanded" id="commentary-9">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:9</span>
+                        <button class="close-btn" onclick="toggleCommentary(9)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Isaiah 49:6</span> — "I have given thee to be the light of the Gentiles, that thou mayest be my salvation even to the farthest part of the earth." The Servant of the Lord brings light not only to Israel but to every nation.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 12 -->
+                <div class="commentary-expanded" id="commentary-12">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:12</span>
+                        <button class="close-btn" onclick="toggleCommentary(12)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Deuteronomy 14:1</span> — "You are the children of the Lord your God." Israel's adoption as God's children is fulfilled and extended through baptism into Christ.
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot ruleoffaith"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="14" onclick="toggleCommentary(14)"><span class="verse-num">14</span>And the Word was made flesh, and dwelt among us, (and we saw his glory, the glory as it were of the only begotten of the Father,) full of grace and truth.</span>
+                    <span class="verse-num">15</span>John beareth witness of him, and crieth out, saying: This was he of whom I spoke: He that shall come after me, is preferred before me: because he was before me.
+                    <span class="verse-num">16</span>And of his fulness we all have received, and grace for grace.
+                    <span class="verse-num">17</span>For the law was given by Moses; grace and truth came by Jesus Christ.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="18" onclick="toggleCommentary(18)"><span class="verse-num">18</span>No man hath seen God at any time: the only begotten Son who is in the bosom of the Father, he hath declared him.</span>
+                </p>
+                
+                <!-- Commentary for verse 14 -->
+                <div class="commentary-expanded" id="commentary-14">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:14</span>
+                        <button class="close-btn" onclick="toggleCommentary(14)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Exodus 40:34–35</span> — The glory of the Lord filled the tabernacle. The Greek "dwelt" (ἐσκήνωσεν) means "tabernacled"—Christ's flesh is the new tabernacle where God's glory dwells among His people.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            The Incarnation: true God became true man without ceasing to be God. The Council of Ephesus (431) used this verse to defend calling Mary "Theotokos" (God-bearer), since she bore the Word made flesh. Chalcedon (451) confessed Christ as one person in two natures, "without confusion, without change, without division, without separation."
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> The Angelus prayer: "And the Word was made flesh, and dwelt among us." At the Creed, genuflection at "and became man."
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> Central to the Nativity and Pascha cycles. "He whom the heavens cannot contain is held in Thy womb, O Theotokos."
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                The Fathers insist: the Word assumed flesh without change to His divine nature. "Made flesh" does not mean transformed into flesh but united to flesh. The incarnation is real—not appearance—yet the divine nature remains impassible.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"He became flesh, not by any change of substance—far from it—but by assuming flesh while remaining what He was."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Augustine</span>
+                                    <span class="father-text">"The Word was made flesh, not by being turned into flesh, but by assuming flesh, that He might dwell among us."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 18 -->
+                <div class="commentary-expanded" id="commentary-18">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:18</span>
+                        <button class="close-btn" onclick="toggleCommentary(18)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Exodus 33:20</span> — "No man shall see me and live." Yet Christ, the only-begotten in the bosom of the Father, has seen and now reveals what was hidden. He is the exegete of the invisible God.
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                Only the Son and Spirit behold the Father fully. All Old Testament theophanies were mediated visions; the incarnate Son alone fully "declares" (ἐξηγήσατο—exegetes) the Father.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"The Son is in the bosom of the Father—that is, in the essence of the Father. For as a man's bosom denotes his inmost being, so here, 'in the bosom' means perfect knowledge."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Hilary of Poitiers</span>
+                                    <span class="father-text">"'In the bosom' denotes not place but nature—dwelling within Him, one with Him."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">19</span>And this is the testimony of John, when the Jews sent from Jerusalem priests and Levites to him, to ask him: Who art thou?
+                    <span class="verse-num">20</span>And he confessed, and did not deny: and he confessed: I am not the Christ.
+                    <span class="verse-num">21</span>And they asked him: What then? Art thou Elias? And he said: I am not. Art thou the prophet? And he answered: No.
+                    <span class="verse-num">22</span>They said therefore unto him: Who art thou, that we may give an answer to them that sent us? What sayest thou of thyself?
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="23" onclick="toggleCommentary(23)"><span class="verse-num">23</span>He said: I am the voice of one crying in the wilderness, make straight the way of the Lord, as said the prophet Isaias.</span>
+                    <span class="verse-num">24</span>And they that were sent, were of the Pharisees.
+                    <span class="verse-num">25</span>And they asked him, and said to him: Why then dost thou baptize, if thou be not Christ, nor Elias, nor the prophet?
+                    <span class="verse-num">26</span>John answered them, saying: I baptize with water; but there hath stood one in the midst of you, whom you know not.
+                    <span class="verse-num">27</span>The same is he that shall come after me, who is preferred before me: the latchet of whose shoe I am not worthy to loose.
+                    <span class="verse-num">28</span>These things were done in Bethania, beyond the Jordan, where John was baptizing.
+                </p>
+                
+                <!-- Commentary for verse 23 -->
+                <div class="commentary-expanded" id="commentary-23">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:23</span>
+                        <button class="close-btn" onclick="toggleCommentary(23)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Isaiah 40:3</span> — "The voice of one crying in the desert: Prepare ye the way of the Lord." The Baptist identifies himself through prophecy: he is the voice; Christ is the Word.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> Advent readings; John the Baptist is commemorated June 24 (Nativity) and August 29 (Beheading).
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> The Forerunner is the most venerated saint after the Theotokos, commemorated multiple times yearly.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="29" onclick="toggleCommentary(29)"><span class="verse-num">29</span>The next day, John saw Jesus coming to him, and he saith: Behold the Lamb of God, behold him who taketh away the sin of the world.</span>
+                    <span class="verse-num">30</span>This is he, of whom I said: After me there cometh a man, who is preferred before me: because he was before me.
+                    <span class="verse-num">31</span>And I knew him not; but that he may be made manifest in Israel, therefore am I come baptizing with water.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot ruleoffaith"></span></span><span class="annotated" data-verse="32" onclick="toggleCommentary(32)"><span class="verse-num">32</span>And John gave testimony, saying: I saw the Spirit coming down, as a dove from heaven, and he remained upon him.</span>
+                    <span class="verse-num">33</span>And I knew him not; but he who sent me to baptize with water, said to me: He upon whom thou shalt see the Spirit descending, and remaining upon him, he it is that baptizeth with the Holy Ghost.
+                    <span class="verse-num">34</span>And I saw, and I gave testimony, that this is the Son of God.
+                </p>
+                
+                <!-- Commentary for verse 29 -->
+                <div class="commentary-expanded" id="commentary-29">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:29</span>
+                        <button class="close-btn" onclick="toggleCommentary(29)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Exodus 12:3–6</span> — The Passover lamb. <span class="scripture-ref">Isaiah 53:7</span> — "He shall be led as a sheep to the slaughter." Christ fulfills both the Paschal sacrifice and the Suffering Servant prophecy.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> "Agnus Dei" sung at every Mass. Before Communion: "Behold the Lamb of God."
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> At the Prothesis, the priest cuts the Lamb from the loaf: "He was led as a sheep to the slaughter."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 32 -->
+                <div class="commentary-expanded" id="commentary-32">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:32</span>
+                        <button class="close-btn" onclick="toggleCommentary(32)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Genesis 1:2</span> — "The Spirit of God moved over the waters." At creation, the Spirit hovers; at the new creation, the Spirit descends upon Christ in the waters of the Jordan.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            The manifestation of the Trinity: the Father's voice, the Son baptized, the Spirit descending. The Creed confesses the Spirit as "the Lord, the giver of life... who with the Father and the Son is adored and glorified."
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot parallels"></span>
+                            <span class="section-title parallels">Canonical Parallels</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="parallel-grid">
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Matthew 3:16</span>
+                                    <span class="parallel-text">"And Jesus being baptized, forthwith came out of the water: and lo, the heavens were opened to him: and he saw the Spirit of God descending as a dove."</span>
+                                </div>
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Mark 1:10</span>
+                                    <span class="parallel-text">"And forthwith coming up out of the water, he saw the heavens opened, and the Spirit as a dove descending, and remaining on him."</span>
+                                </div>
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Luke 3:22</span>
+                                    <span class="parallel-text">"And the Holy Ghost descended in a bodily shape, as a dove upon him."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">35</span>The next day again John stood, and two of his disciples.
+                    <span class="verse-num">36</span>And beholding Jesus walking, he saith: Behold the Lamb of God.
+                    <span class="verse-num">37</span>And the two disciples heard him speak, and they followed Jesus.
+                    <span class="verse-num">38</span>And Jesus turning, and seeing them following him, saith to them: What seek you? Who said to him, Rabbi, (which is to say, being interpreted, Master,) where dwellest thou?
+                    <span class="verse-num">39</span>He saith to them: Come and see. They came, and saw where he abode, and they stayed with him that day: now it was about the tenth hour.
+                    <span class="verse-num">40</span>And Andrew, the brother of Simon Peter, was one of the two who had heard of John, and followed him.
+                </p>
+                
+                <p class="paragraph">
+                    <span class="verse-num">41</span>He findeth first his brother Simon, and saith to him: We have found the Messias, which is, being interpreted, the Christ.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="42" onclick="toggleCommentary(42)"><span class="verse-num">42</span>And he brought him to Jesus. And Jesus looking upon him, said: Thou art Simon the son of Jona: thou shalt be called Cephas, which is interpreted Peter.</span>
+                    <span class="verse-num">43</span>On the following day, he would go forth into Galilee, and he findeth Philip. And Jesus saith to him: Follow me.
+                    <span class="verse-num">44</span>Now Philip was of Bethsaida, the city of Andrew and Peter.
+                    <span class="verse-num">45</span>Philip findeth Nathanael, and saith to him: We have found him of whom Moses in the law, and the prophets did write, Jesus the son of Joseph of Nazareth.
+                </p>
+                
+                <!-- Commentary for verse 42 -->
+                <div class="commentary-expanded" id="commentary-42">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:42</span>
+                        <button class="close-btn" onclick="toggleCommentary(42)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Genesis 17:5</span> — Abram renamed Abraham. <span class="scripture-ref">Genesis 32:28</span> — Jacob renamed Israel. Divine name-changes signify divine election and mission. Christ gives Simon the name Cephas (Aramaic) / Petros (Greek) = "Rock."
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot parallels"></span>
+                            <span class="section-title parallels">Canonical Parallels</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="parallel-grid">
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Matthew 16:18</span>
+                                    <span class="parallel-text">"And I say to thee: That thou art Peter; and upon this rock I will build my church."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">46</span>And Nathanael said to him: Can any thing of good come from Nazareth? Philip saith to him: Come and see.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="47" onclick="toggleCommentary(47)"><span class="verse-num">47</span>Jesus saw Nathanael coming to him: and he saith of him: Behold an Israelite indeed, in whom there is no guile.</span>
+                    <span class="verse-num">48</span>Nathanael saith to him: Whence knowest thou me? Jesus answered, and said to him: Before that Philip called thee, when thou wast under the fig tree, I saw thee.
+                    <span class="verse-num">49</span>Nathanael answered him, and said: Rabbi, thou art the Son of God, thou art the King of Israel.
+                    <span class="verse-num">50</span>Jesus answered, and said to him: Because I said unto thee, I saw thee under the fig tree, thou believest: greater things than these shalt thou see.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="51" onclick="toggleCommentary(51)"><span class="verse-num">51</span>And he saith to him: Amen, amen I say to you, you shall see the heaven opened, and the angels of God ascending and descending upon the Son of man.</span>
+                </p>
+                
+                <!-- Commentary for verse 47 -->
+                <div class="commentary-expanded" id="commentary-47">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:47</span>
+                        <button class="close-btn" onclick="toggleCommentary(47)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Psalm 32:2</span> — "Blessed is the man to whom the Lord hath not imputed sin, and in whose spirit there is no guile." Nathanael embodies the ideal Israelite—honest and without deceit, unlike Jacob ("supplanter") before his transformation.
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 51 -->
+                <div class="commentary-expanded" id="commentary-51">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 1:51</span>
+                        <button class="close-btn" onclick="toggleCommentary(51)">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Genesis 28:12</span> — Jacob's dream: "A ladder standing upon the earth, and the top thereof touching heaven: the angels also of God ascending and descending by it." Christ is the true ladder, the place of communion between heaven and earth. <span class="scripture-ref">Daniel 7:13–14</span> — "Son of man" evokes Daniel's vision of one "like the Son of man" who receives everlasting dominion.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter 2 (with study notes) -->
+        <div class="chapter-content" data-chapter="2" id="chapter-2">
+            <div class="chapter-header">CHAPTER II</div>
+            
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot ruleoffaith"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="2-1" onclick="toggleCommentary('2-1')"><span class="verse-num">1</span>And the third day, there was a marriage in Cana of Galilee: and the mother of Jesus was there.</span>
+                    <span class="verse-num">2</span>And Jesus also was invited, and his disciples, to the marriage.
+                    <span class="verse-num">3</span>And the wine failing, the mother of Jesus saith to him: They have no wine.
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span><span class="margin-dot fathers"></span></span><span class="annotated" data-verse="2-4" onclick="toggleCommentary('2-4')"><span class="verse-num">4</span>And Jesus saith to her: Woman, what is that to me and to thee? my hour is not yet come.</span>
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span><span class="margin-dot liturgy"></span></span><span class="annotated" data-verse="2-5" onclick="toggleCommentary('2-5')"><span class="verse-num">5</span>His mother saith to the waiters: Whatsoever he shall say to you, do ye.</span>
+                    <span class="verse-num">6</span>Now there were set there six waterpots of stone, according to the manner of the purifying of the Jews, containing two or three measures apiece.
+                    <span class="verse-num">7</span>Jesus saith to them: Fill the waterpots with water. And they filled them up to the brim.
+                    <span class="verse-num">8</span>And Jesus saith to them: Draw out now, and carry to the chief steward of the feast. And they carried it.
+                    <span class="verse-num">9</span>And when the chief steward had tasted the water made wine, and knew not whence it was, but the waiters knew who had drawn the water; the chief steward calleth the bridegroom,
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span></span><span class="annotated" data-verse="2-10" onclick="toggleCommentary('2-10')"><span class="verse-num">10</span>And saith to him: Every man at first setteth forth good wine, and when men have well drunk, then that which is worse. But thou hast kept the good wine until now.</span>
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span><span class="margin-dot liturgy"></span><span class="margin-dot fathers"></span></span><span class="annotated" data-verse="2-11" onclick="toggleCommentary('2-11')"><span class="verse-num">11</span>This beginning of miracles did Jesus in Cana of Galilee; and manifested his glory, and his disciples believed in him.</span>
+                </p>
+                
+                <!-- Commentary for verse 2:1 -->
+                <div class="commentary-expanded" id="commentary-2-1">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:1</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-1')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Isaiah 54:5</span> — "For thy Maker is thy husband." <span class="scripture-ref">Hosea 2:19</span> — "I will espouse thee to me forever." The wedding setting evokes the prophetic image of God as the Divine Bridegroom of Israel. <span class="scripture-ref">Isaiah 25:6</span> — The Messianic banquet: "The Lord of hosts shall make unto all people a feast of fat things, a feast of wine."
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            "The third day" anticipates the Resurrection. The abundance of wine signals the arrival of the Messianic age foretold by the prophets. Christ appears as the true Bridegroom (cf. 3:29) whose presence transforms scarcity into superabundance—a sign of the New Covenant surpassing the Old.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> Gospel for Second Sunday of Ordinary Time (Year C). Read at the Ritual Mass of Marriage as a Gospel option. The Cana miracle was anciently commemorated on Epiphany alongside the Magi and the Baptism.
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> One of three Theophany commemorations (with the Magi and Baptism). The miracle at Cana "manifested His glory"—a divine epiphany. The Epiphany antiphon recalls: "Today water is changed into wine for the wedding feast."
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 2:4 -->
+                <div class="commentary-expanded" id="commentary-2-4">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:4</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-4')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            "Woman" (γύναι) is not disrespectful but formal and significant—the same address Christ uses from the Cross (19:26). It signals Mary's role as the New Eve, mother of all the living in Christ. "My hour" refers to Christ's Passion and glorification; Mary's intercession anticipates it. Her faith-filled request occasions the first manifestation of divine glory.
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                The Fathers teach that "Woman" honors Mary as the New Eve at the beginning of salvation's work (Cana) as at its completion (the Cross). Christ's apparent refusal becomes consent through Mary's intercession—showing her unique role as Mediatrix.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"He calls her 'Woman' as an honor, not as a reproach. For this is the name given to her who was the mother of all living, before she had sinned."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Augustine</span>
+                                    <span class="father-text">"'My hour is not yet come'—the hour when He should acknowledge her, was the hour of His Passion, when He commended her to His disciple."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Irenaeus</span>
+                                    <span class="father-text">"Mary the Virgin is found obedient, saying 'Be it done to me according to thy word.' But Eve was disobedient. And thus the knot of Eve's disobedience was loosed by the obedience of Mary."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 2:5 -->
+                <div class="commentary-expanded" id="commentary-2-5">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:5</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-5')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            Mary's words echo Israel's covenant response: <span class="scripture-ref">Exodus 19:8</span> — "All that the Lord hath spoken we will do." She who said "Be it done to me according to thy word" (Lk 1:38) now directs others to the same obedience. This is Mary's final recorded speech in Scripture—a perpetual command to the Church: obey Christ.
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> The basis for Marian devotion directing souls to Christ. "To Jesus through Mary." These words are inscribed in countless shrines and form the heart of Marian consecration spirituality.
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> The Theotokos intercedes and directs: "Whatsoever He saith unto you, do it." Her role is always to point to her Son, never to detract from Him.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 2:10 -->
+                <div class="commentary-expanded" id="commentary-2-10">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:10</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-10')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Amos 9:13</span> — "The mountains shall drop sweet wine." <span class="scripture-ref">Joel 3:18</span> — "The hills shall flow with milk, and all the rivers of Juda shall flow with waters." The superabundant wine of the Messianic age, "kept until now," fulfills prophetic expectation. The old wine of the Law gives way to the new wine of grace (cf. Mk 2:22).
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 2:11 -->
+                <div class="commentary-expanded" id="commentary-2-11">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:11</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-11')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            John calls this a "sign" (σημεῖον), not merely a miracle—it points beyond itself to Christ's identity. The "glory" (δόξα) manifested here is the divine glory of the Word made flesh (1:14). The disciples' belief is the proper response to signs throughout John's Gospel, leading to the book's stated purpose (20:31): "that believing, you may have life."
+                        </div>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot liturgy"></span>
+                            <span class="section-title liturgy">Liturgy</span>
+                        </div>
+                        <div class="section-content">
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label west">Roman:</span> The transformation of water into wine prefigures the Eucharist, where wine becomes the Blood of Christ. At every Mass, ordinary elements become vehicles of divine glory.
+                            </div>
+                            <div class="liturgy-tradition">
+                                <span class="tradition-label east">Orthodox:</span> The Epiphany antiphon: "Three wonders mark this holy day: today the star leads the Magi; today water is changed into wine; today Christ is baptized in the Jordan."
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                The Fathers see the Cana miracle as revealing Christ's divine creative power and as a figure of the greater transformation He works in the Eucharist and in souls through grace.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"He who changes water into wine can also change our souls from one condition to another, from the worse to the better."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">St. Cyril of Alexandria</span>
+                                    <span class="father-text">"The water becomes wine by the word of Christ, who in a manner ineffable transforms the elements. And what wonder if He who made all things from nothing should change one thing into another?"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">12</span>After this he went down to Capharnaum, he and his mother, and his brethren, and his disciples: and they remained there not many days.
+                    <span class="verse-num">13</span>And the pasch of the Jews was at hand, and Jesus went up to Jerusalem.
+                    <span class="verse-num">14</span>And he found in the temple them that sold oxen and sheep and doves, and the changers of money sitting.
+                    <span class="verse-num">15</span>And when he had made, as it were, a scourge of little cords, he drove them all out of the temple, the sheep also and the oxen, and the money of the changers he poured out, and the tables he overthrew.
+                    <span class="verse-num">16</span>And to them that sold doves he said: Take these things hence, and make not the house of my Father a house of traffic.
+                    <span class="margin-dots"><span class="margin-dot oldtestament"></span><span class="margin-dot parallels"></span></span><span class="annotated" data-verse="2-17" onclick="toggleCommentary('2-17')"><span class="verse-num">17</span>And his disciples remembered, that it was written: The zeal of thy house hath eaten me up.</span>
+                </p>
+                
+                <!-- Commentary for verse 2:17 -->
+                <div class="commentary-expanded" id="commentary-2-17">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:17</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-17')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot oldtestament"></span>
+                            <span class="section-title oldtestament">Old Testament</span>
+                        </div>
+                        <div class="section-content">
+                            <span class="scripture-ref">Psalm 69:9</span> — "The zeal of thy house hath eaten me up; and the reproaches of them that reproached thee are fallen upon me." This Messianic psalm is one of the most frequently cited in the New Testament. The "zeal" that consumes the psalmist prefigures Christ's consuming passion for His Father's house and glory.
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot parallels"></span>
+                            <span class="section-title parallels">Canonical Parallels</span>
+                        </div>
+                        <div class="expandable-content">
+                            <p style="margin-bottom: 12px; color: var(--text-medium);">The Synoptic Gospels record a temple cleansing near the end of Jesus' ministry. John places this at the beginning, emphasizing from the start Christ's authority over the temple and His identity as the Son who defends His Father's house.</p>
+                            <div class="parallel-grid">
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Matthew 21:12–13</span>
+                                    <span class="parallel-text">"And Jesus went into the temple of God, and cast out all them that sold and bought in the temple, and overthrew the tables of the money changers... My house shall be called the house of prayer; but you have made it a den of thieves."</span>
+                                </div>
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Mark 11:15–17</span>
+                                    <span class="parallel-text">"And they come to Jerusalem. And when he was entered into the temple, he began to cast out them that sold and bought in the temple... Is it not written: My house shall be called the house of prayer to all nations? But you have made it a den of thieves."</span>
+                                </div>
+                                <div class="parallel-passage">
+                                    <span class="parallel-ref">Luke 19:45–46</span>
+                                    <span class="parallel-text">"And entering into the temple, he began to cast out them that sold therein, and them that bought. Saying to them: It is written: My house is the house of prayer. But you have made it a den of thieves."</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="paragraph">
+                    <span class="verse-num">18</span>The Jews, therefore, answered, and said to him: What sign dost thou shew unto us, seeing thou dost these things?
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span><span class="margin-dot fathers"></span></span><span class="annotated" data-verse="2-19" onclick="toggleCommentary('2-19')"><span class="verse-num">19</span>Jesus answered, and said to them: Destroy this temple, and in three days I will raise it up.</span>
+                    <span class="verse-num">20</span>The Jews then said: Six and forty years was this temple in building; and wilt thou raise it up in three days?
+                    <span class="margin-dots"><span class="margin-dot ruleoffaith"></span></span><span class="annotated" data-verse="2-21" onclick="toggleCommentary('2-21')"><span class="verse-num">21</span>But he spoke of the temple of his body.</span>
+                    <span class="verse-num">22</span>When therefore he was risen again from the dead, his disciples remembered, that he had said this, and they believed the scripture, and the word that Jesus had said.
+                    <span class="verse-num">23</span>Now when he was at Jerusalem, at the pasch, upon the festival day, many believed in his name, seeing his signs which he did.
+                    <span class="verse-num">24</span>But Jesus did not trust himself unto them, for that he knew all men,
+                    <span class="verse-num">25</span>And because he needed not that any should give testimony of man: for he knew what was in man.
+                </p>
+                
+                <!-- Commentary for verse 2:19 -->
+                <div class="commentary-expanded" id="commentary-2-19">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:19</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-19')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            Christ prophesies His own death and Resurrection—the definitive "sign" He will give. The Resurrection is the foundation of Christian faith: "If Christ be not risen again, your faith is vain" (1 Cor 15:17). He has authority to lay down His life and take it up again (10:18). This prophecy was twisted at His trial (Mt 26:61) but fulfilled on the third day.
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot fathers"></span>
+                            <span class="section-title fathers">Church Fathers</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="consensus">
+                                The Fathers unanimously identify the "temple" as Christ's body and see the Resurrection as the ultimate sign of His divinity. What His enemies destroy, He Himself raises—proving He is Lord of life and death.
+                            </div>
+                            <button class="father-toggle" onclick="toggleFatherQuotes(this)">
+                                <span>Show individual witnesses</span>
+                            </button>
+                            <div class="father-quotes">
+                                <div class="father-quote">
+                                    <span class="father-name">St. John Chrysostom</span>
+                                    <span class="father-text">"He does not say 'and I will build it,' but 'I will raise it up,' showing that even after death He would still be alive."</span>
+                                </div>
+                                <div class="father-quote">
+                                    <span class="father-name">Tertullian</span>
+                                    <span class="father-text">"The Lord also described this destiny of the body, when clothed in its very substance He said, 'Destroy this temple, and in three days I will raise it up again.'"</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Commentary for verse 2:21 -->
+                <div class="commentary-expanded" id="commentary-2-21">
+                    <div class="commentary-header">
+                        <span class="commentary-ref">JOHN 2:21</span>
+                        <button class="close-btn" onclick="toggleCommentary('2-21')">×</button>
+                    </div>
+                    <div class="commentary-section">
+                        <div class="section-header">
+                            <span class="section-dot ruleoffaith"></span>
+                            <span class="section-title ruleoffaith">Rule of Faith</span>
+                        </div>
+                        <div class="section-content">
+                            Christ's body is the true Temple—the meeting place of God and humanity, the center of worship, the dwelling of divine glory. The Jerusalem temple was a type; Christ is the reality. As He told the Samaritan woman: worship is no longer bound to physical locations but is "in spirit and truth" (4:23–24), because the True Temple has come.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter 3 -->
+        <div class="chapter-content" data-chapter="3" id="chapter-3">
+            <div class="chapter-header">CHAPTER III</div>
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="verse-num">1</span>And there was a man of the Pharisees, named Nicodemus, a ruler of the Jews.
+                    <span class="verse-num">2</span>This man came to Jesus by night, and said to him: Rabbi, we know that thou art come a teacher from God; for no man can do these signs which thou dost, unless God be with him.
+                    <span class="verse-num">3</span>Jesus answered, and said to him: Amen, amen I say to thee, unless a man be born again, he cannot see the kingdom of God.
+                    <span class="verse-num">4</span>Nicodemus saith to him: How can a man be born when he is old? can he enter a second time into his mother's womb, and be born again?
+                    <span class="verse-num">5</span>Jesus answered: Amen, amen I say to thee, unless a man be born again of water and the Holy Ghost, he cannot enter into the kingdom of God.
+                    <span class="verse-num">6</span>That which is born of the flesh, is flesh; and that which is born of the Spirit, is spirit.
+                    <span class="verse-num">7</span>Wonder not, that I said to thee, you must be born again.
+                    <span class="verse-num">8</span>The Spirit breatheth where he will; and thou hearest his voice, but thou knowest not whence he cometh, and whither he goeth: so is every one that is born of the Spirit.
+                    <span class="verse-num">9</span>Nicodemus answered, and said to him: How can these things be done?
+                    <span class="verse-num">10</span>Jesus answered, and said to him: Art thou a master in Israel, and knowest not these things?
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">11</span>Amen, amen I say to thee, that we speak what we know, and we testify what we have seen, and you receive not our testimony.
+                    <span class="verse-num">12</span>If I have spoken to you earthly things, and you believe not; how will you believe, if I shall speak to you heavenly things?
+                    <span class="verse-num">13</span>And no man hath ascended into heaven, but he that descended from heaven, the Son of man who is in heaven.
+                    <span class="verse-num">14</span>And as Moses lifted up the serpent in the desert, so must the Son of man be lifted up:
+                    <span class="verse-num">15</span>That whosoever believeth in him, may not perish; but may have life everlasting.
+                    <span class="verse-num">16</span>For God so loved the world, as to give his only begotten Son; that whosoever believeth in him, may not perish, but may have life everlasting.
+                    <span class="verse-num">17</span>For God sent not his Son into the world, to judge the world, but that the world may be saved by him.
+                    <span class="verse-num">18</span>He that believeth in him is not judged. But he that doth not believe, is already judged: because he believeth not in the name of the only begotten Son of God.
+                    <span class="verse-num">19</span>And this is the judgment: because the light is come into the world, and men loved darkness rather than the light: for their works were evil.
+                    <span class="verse-num">20</span>For every one that doth evil hateth the light, and cometh not to the light, that his works may not be reproved.
+                    <span class="verse-num">21</span>But he that doth truth, cometh to the light, that his works may be made manifest, because they are done in God.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">22</span>After these things Jesus and his disciples came into the land of Judea: and there he abode with them, and baptized.
+                    <span class="verse-num">23</span>And John also was baptizing in Ennon near Salim; because there was much water there; and they came and were baptized.
+                    <span class="verse-num">24</span>For John was not yet cast into prison.
+                    <span class="verse-num">25</span>And there arose a question between some of John's disciples and the Jews concerning purification:
+                    <span class="verse-num">26</span>And they came to John, and said to him: Rabbi, he that was with thee beyond the Jordan, to whom thou gavest testimony, behold he baptizeth, and all men come to him.
+                    <span class="verse-num">27</span>John answered and said: A man cannot receive any thing, unless it be given him from heaven.
+                    <span class="verse-num">28</span>You yourselves do bear me witness, that I said, that I am not Christ, but that I am sent before him.
+                    <span class="verse-num">29</span>He that hath the bride, is the bridegroom: but the friend of the bridegroom, who standeth and heareth him, rejoiceth with joy because of the bridegroom's voice. This my joy therefore is fulfilled.
+                    <span class="verse-num">30</span>He must increase, but I must decrease.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">31</span>He that cometh from above, is above all. He that is of the earth, of the earth he is, and of the earth he speaketh. He that cometh from heaven, is above all.
+                    <span class="verse-num">32</span>And what he hath seen and heard, that he testifieth: and no man receiveth his testimony.
+                    <span class="verse-num">33</span>He that hath received his testimony, hath set to his seal that God is true.
+                    <span class="verse-num">34</span>For he whom God hath sent, speaketh the words of God: for God doth not give the Spirit by measure.
+                    <span class="verse-num">35</span>The Father loveth the Son: and he hath given all things into his hand.
+                    <span class="verse-num">36</span>He that believeth in the Son, hath life everlasting; but he that believeth not the Son, shall not see life; but the wrath of God abideth on him.
+                </p>
+            </div>
+        </div>
+
+        <!-- Chapters 4-21 placeholders -->
+        <div class="chapter-content" data-chapter="4" id="chapter-4">
+            <div class="chapter-header">CHAPTER IV</div>
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="verse-num">1</span>When Jesus therefore understood that the Pharisees had heard that Jesus maketh more disciples, and baptizeth more than John,
+                    <span class="verse-num">2</span>(Though Jesus himself did not baptize, but his disciples,)
+                    <span class="verse-num">3</span>He left Judea, and went again into Galilee.
+                    <span class="verse-num">4</span>And he was of necessity to pass through Samaria.
+                    <span class="verse-num">5</span>He cometh therefore to a city of Samaria, which is called Sichar, near the land which Jacob gave to his son Joseph.
+                    <span class="verse-num">6</span>Now Jacob's well was there. Jesus therefore being wearied with his journey, sat thus on the well. It was about the sixth hour.
+                    <span class="verse-num">7</span>There cometh a woman of Samaria, to draw water. Jesus saith to her: Give me to drink.
+                    <span class="verse-num">8</span>For his disciples were gone into the city to buy meats.
+                    <span class="verse-num">9</span>Then that Samaritan woman saith to him: How dost thou, being a Jew, ask of me to drink, who am a Samaritan woman? For the Jews do not communicate with the Samaritans.
+                    <span class="verse-num">10</span>Jesus answered, and said to her: If thou didst know the gift of God, and who he is that saith to thee, Give me to drink; thou perhaps wouldst have asked of him, and he would have given thee living water.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">11</span>The woman saith to him: Sir, thou hast nothing wherein to draw, and the well is deep; from whence then hast thou living water?
+                    <span class="verse-num">12</span>Art thou greater than our father Jacob, who gave us the well, and drank thereof himself, and his children, and his cattle?
+                    <span class="verse-num">13</span>Jesus answered, and said to her: Whosoever drinketh of this water, shall thirst again; but he that shall drink of the water that I will give him, shall not thirst for ever:
+                    <span class="verse-num">14</span>But the water that I will give him, shall become in him a fountain of water, springing up into life everlasting.
+                    <span class="verse-num">15</span>The woman saith to him: Sir, give me this water, that I may not thirst, nor come hither to draw.
+                    <span class="verse-num">16</span>Jesus saith to her: Go, call thy husband, and come hither.
+                    <span class="verse-num">17</span>The woman answered, and said: I have no husband. Jesus said to her: Thou hast said well, I have no husband:
+                    <span class="verse-num">18</span>For thou hast had five husbands: and he whom thou now hast, is not thy husband. This thou hast said truly.
+                    <span class="verse-num">19</span>The woman saith to him: Sir, I perceive that thou art a prophet.
+                    <span class="verse-num">20</span>Our fathers adored on this mountain, and you say, that at Jerusalem is the place where men must adore.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">21</span>Jesus saith to her: Woman, believe me, that the hour cometh, when you shall neither on this mountain, nor in Jerusalem, adore the Father.
+                    <span class="verse-num">22</span>You adore that which you know not: we adore that which we know; for salvation is of the Jews.
+                    <span class="verse-num">23</span>But the hour cometh, and now is, when the true adorers shall adore the Father in spirit and in truth. For the Father also seeketh such to adore him.
+                    <span class="verse-num">24</span>God is a spirit; and they that adore him, must adore him in spirit and in truth.
+                    <span class="verse-num">25</span>The woman saith to him: I know that the Messias cometh (who is called Christ); therefore, when he is come, he will tell us all things.
+                    <span class="verse-num">26</span>Jesus saith to her: I am he, who am speaking with thee.
+                    <span class="verse-num">27</span>And immediately his disciples came; and they wondered that he talked with the woman. Yet no man said: What seekest thou? or, why talkest thou with her?
+                    <span class="verse-num">28</span>The woman therefore left her waterpot, and went her way into the city, and saith to the men there:
+                    <span class="verse-num">29</span>Come, and see a man who has told me all things whatsoever I have done. Is not he the Christ?
+                    <span class="verse-num">30</span>They went therefore out of the city, and came unto him.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">31</span>In the mean time the disciples prayed him, saying: Rabbi, eat.
+                    <span class="verse-num">32</span>But he said to them: I have meat to eat, which you know not.
+                    <span class="verse-num">33</span>The disciples therefore said one to another: Hath any man brought him to eat?
+                    <span class="verse-num">34</span>Jesus saith to them: My meat is to do the will of him that sent me, that I may perfect his work.
+                    <span class="verse-num">35</span>Do not you say, There are yet four months, and then the harvest cometh? Behold, I say to you, lift up your eyes, and see the countries; for they are white already to harvest.
+                    <span class="verse-num">36</span>And he that reapeth receiveth wages, and gathereth fruit unto life everlasting: that both he that soweth, and he that reapeth, may rejoice together.
+                    <span class="verse-num">37</span>For in this is the saying true: That it is one man that soweth, and it is another that reapeth.
+                    <span class="verse-num">38</span>I have sent you to reap that in which you did not labour: others have laboured, and you have entered into their labours.
+                    <span class="verse-num">39</span>Now of that city many of the Samaritans believed in him, for the word of the woman giving testimony: He told me all things whatsoever I have done.
+                    <span class="verse-num">40</span>So when the Samaritans were come to him, they desired that he would tarry there. And he abode there two days.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">41</span>And many more believed in him because of his own word.
+                    <span class="verse-num">42</span>And they said to the woman: We now believe, not for thy saying: for we ourselves have heard him, and know that this is indeed the Saviour of the world.
+                    <span class="verse-num">43</span>Now after two days, he departed thence, and went into Galilee.
+                    <span class="verse-num">44</span>For Jesus himself gave testimony that a prophet hath no honour in his own country.
+                    <span class="verse-num">45</span>And when he was come into Galilee, the Galileans received him, having seen all the things he had done at Jerusalem on the festival day; for they also went to the festival day.
+                    <span class="verse-num">46</span>He came again therefore into Cana of Galilee, where he made the water wine. And there was a certain ruler, whose son was sick at Capharnaum.
+                    <span class="verse-num">47</span>He having heard that Jesus was come from Judea into Galilee, went to him, and prayed him to come down, and heal his son; for he was at the point of death.
+                    <span class="verse-num">48</span>Jesus therefore said to him: Unless you see signs and wonders, you believe not.
+                    <span class="verse-num">49</span>The ruler saith to him: Lord, come down before that my son die.
+                    <span class="verse-num">50</span>Jesus saith to him: Go thy way; thy son liveth. The man believed the word which Jesus said to him, and went his way.
+                    <span class="verse-num">51</span>And as he was going down, his servants met him; and they brought word, saying, that his son lived.
+                    <span class="verse-num">52</span>He asked therefore of them the hour wherein he grew better. And they said to him: Yesterday, at the seventh hour, the fever left him.
+                    <span class="verse-num">53</span>The father therefore knew, that it was at the same hour that Jesus said to him, Thy son liveth; and himself believed, and his whole house.
+                    <span class="verse-num">54</span>This is again the second miracle that Jesus did, when he was come out of Judea into Galilee.
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="5" id="chapter-5">
+            <div class="chapter-header">CHAPTER V</div>
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="verse-num">1</span>After these things was a festival day of the Jews, and Jesus went up to Jerusalem.
+                    <span class="verse-num">2</span>Now there is at Jerusalem a pond, called Probatica, which in Hebrew is named Bethsaida, having five porches.
+                    <span class="verse-num">3</span>In these lay a great multitude of sick, of blind, of lame, of withered; waiting for the moving of the water.
+                    <span class="verse-num">4</span>And an angel of the Lord descended at certain times into the pond; and the water was moved. And he that went down first into the pond after the motion of the water, was made whole, of whatsoever infirmity he lay under.
+                    <span class="verse-num">5</span>And there was a certain man there, that had been eight and thirty years under his infirmity.
+                    <span class="verse-num">6</span>Him when Jesus had seen lying, and knew that he had been now a long time, he saith to him: Wilt thou be made whole?
+                    <span class="verse-num">7</span>The infirm man answered him: Sir, I have no man, when the water is troubled, to put me into the pond. For whilst I am coming, another goeth down before me.
+                    <span class="verse-num">8</span>Jesus saith to him: Arise, take up thy bed, and walk.
+                    <span class="verse-num">9</span>And immediately the man was made whole: and he took up his bed, and walked. And it was the sabbath that day.
+                    <span class="verse-num">10</span>The Jews therefore said to him that was healed: It is the sabbath; it is not lawful for thee to take up thy bed.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">11</span>He answered them: He that made me whole, he said to me, Take up thy bed, and walk.
+                    <span class="verse-num">12</span>They asked him therefore: Who is that man who said to thee, Take up thy bed, and walk?
+                    <span class="verse-num">13</span>But he who was healed, knew not who it was; for Jesus went aside from the multitude standing in the place.
+                    <span class="verse-num">14</span>Afterwards, Jesus findeth him in the temple, and saith to him: Behold thou art made whole: sin no more, lest some worse thing happen to thee.
+                    <span class="verse-num">15</span>The man went his way, and told the Jews, that it was Jesus who had made him whole.
+                    <span class="verse-num">16</span>Therefore did the Jews persecute Jesus, because he did these things on the sabbath.
+                    <span class="verse-num">17</span>But Jesus answered them: My Father worketh until now; and I work.
+                    <span class="verse-num">18</span>Hereupon therefore the Jews sought the more to kill him, because he did not only break the sabbath, but also said God was his Father, making himself equal to God.
+                    <span class="verse-num">19</span>Then Jesus answered, and said to them: Amen, amen, I say unto you, the Son cannot do any thing of himself, but what he seeth the Father doing: for what things soever he doth, these the Son also doth in like manner.
+                    <span class="verse-num">20</span>For the Father loveth the Son, and sheweth him all things which himself doth: and greater works than these will he shew him, that you may wonder.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">21</span>For as the Father raiseth up the dead, and giveth life: so the Son also giveth life to whom he will.
+                    <span class="verse-num">22</span>For neither doth the Father judge any man, but hath given all judgment to the Son.
+                    <span class="verse-num">23</span>That all men may honour the Son, as they honour the Father. He who honoureth not the Son, honoureth not the Father, who hath sent him.
+                    <span class="verse-num">24</span>Amen, amen I say unto you, that he who heareth my word, and believeth him that sent me, hath life everlasting; and cometh not into judgment, but is passed from death to life.
+                    <span class="verse-num">25</span>Amen, amen I say unto you, that the hour cometh, and now is, when the dead shall hear the voice of the Son of God, and they that hear shall live.
+                    <span class="verse-num">26</span>For as the Father hath life in himself, so he hath given to the Son also to have life in himself.
+                    <span class="verse-num">27</span>And he hath given him power to do judgment, because he is the Son of man.
+                    <span class="verse-num">28</span>Wonder not at this; for the hour cometh, wherein all that are in the graves shall hear the voice of the Son of God.
+                    <span class="verse-num">29</span>And they that have done good things, shall come forth unto the resurrection of life; but they that have done evil, unto the resurrection of judgment.
+                    <span class="verse-num">30</span>I cannot of myself do any thing. As I hear, so I judge: and my judgment is just; because I seek not my own will, but the will of him that sent me.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">31</span>If I bear witness of myself, my witness is not true.
+                    <span class="verse-num">32</span>There is another that beareth witness of me; and I know that the witness which he witnesseth of me is true.
+                    <span class="verse-num">33</span>You sent to John, and he gave testimony to the truth.
+                    <span class="verse-num">34</span>But I receive not testimony from man: but I say these things, that you may be saved.
+                    <span class="verse-num">35</span>He was a burning and a shining light: and you were willing for a time to rejoice in his light.
+                    <span class="verse-num">36</span>But I have a greater testimony than that of John: for the works which the Father hath given me to perfect; the works themselves, which I do, give testimony of me, that the Father hath sent me.
+                    <span class="verse-num">37</span>And the Father himself who hath sent me, hath given testimony of me: neither have you heard his voice at any time, nor seen his shape.
+                    <span class="verse-num">38</span>And you have not his word abiding in you: for whom he hath sent, him you believe not.
+                    <span class="verse-num">39</span>Search the scriptures, for you think in them to have life everlasting; and the same are they that give testimony of me.
+                    <span class="verse-num">40</span>And you will not come to me that you may have life.
+                    <span class="verse-num">41</span>I receive not glory from men.
+                    <span class="verse-num">42</span>But I know you, that you have not the love of God in you.
+                    <span class="verse-num">43</span>I am come in the name of my Father, and you receive me not: if another shall come in his own name, him you will receive.
+                    <span class="verse-num">44</span>How can you believe, who receive glory one from another: and the glory which is from God alone, you do not seek?
+                    <span class="verse-num">45</span>Think not that I will accuse you to the Father. There is one that accuseth you, Moses, in whom you trust.
+                    <span class="verse-num">46</span>For if you did believe Moses, you would perhaps believe me also; for he wrote of me.
+                    <span class="verse-num">47</span>But if you do not believe his writings, how will you believe my words?
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="6" id="chapter-6">
+            <div class="chapter-header">CHAPTER VI</div>
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="verse-num">1</span>After these things Jesus went over the sea of Galilee, which is that of Tiberias.
+                    <span class="verse-num">2</span>And a great multitude followed him, because they saw the miracles which he did on them that were diseased.
+                    <span class="verse-num">3</span>Jesus therefore went up into a mountain, and there he sat with his disciples.
+                    <span class="verse-num">4</span>Now the pasch, the festival day of the Jews, was near at hand.
+                    <span class="verse-num">5</span>When Jesus therefore had lifted up his eyes, and seen that a very great multitude cometh to him, he said to Philip: Whence shall we buy bread, that these may eat?
+                    <span class="verse-num">6</span>And this he said to try him; for he himself knew what he would do.
+                    <span class="verse-num">7</span>Philip answered him: Two hundred pennyworth of bread is not sufficient for them, that every one may take a little.
+                    <span class="verse-num">8</span>One of his disciples, Andrew, the brother of Simon Peter, saith to him:
+                    <span class="verse-num">9</span>There is a boy here that hath five barley loaves, and two fishes; but what are these among so many?
+                    <span class="verse-num">10</span>Then Jesus said: Make the men sit down. Now there was much grass in the place. The men therefore sat down, in number about five thousand.
+                    <span class="verse-num">11</span>And Jesus took the loaves: and when he had given thanks, he distributed to them that were set down. In like manner also of the fishes, as much as they would.
+                    <span class="verse-num">12</span>And when they were filled, he said to his disciples: Gather up the fragments that remain, lest they be lost.
+                    <span class="verse-num">13</span>They gathered up therefore, and filled twelve baskets with the fragments of the five barley loaves, which remained over and above to them that had eaten.
+                    <span class="verse-num">14</span>Now those men, when they had seen what a miracle Jesus had done, said: This is of a truth the prophet, that is to come into the world.
+                    <span class="verse-num">15</span>Jesus therefore, when he knew that they would come to take him by force, and make him king, fled again into the mountain himself alone.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">16</span>And when evening was come, his disciples went down to the sea.
+                    <span class="verse-num">17</span>And when they had gone up into a ship, they went over the sea to Capharnaum; and it was now dark, and Jesus was not come unto them.
+                    <span class="verse-num">18</span>And the sea arose, by reason of a great wind that blew.
+                    <span class="verse-num">19</span>When they had rowed therefore about five and twenty or thirty furlongs, they see Jesus walking upon the sea, and drawing nigh to the ship, and they were afraid.
+                    <span class="verse-num">20</span>But he saith to them: It is I; be not afraid.
+                    <span class="verse-num">21</span>They were willing therefore to take him into the ship; and presently the ship was at the land to which they were going.
+                    <span class="verse-num">22</span>The next day, the multitude that stood on the other side of the sea, saw that there was no other ship there but one, and that Jesus had not entered into the ship with his disciples, but that his disciples were gone away alone.
+                    <span class="verse-num">23</span>But other ships came in from Tiberias; nigh unto the place where they had eaten the bread, the Lord giving thanks.
+                    <span class="verse-num">24</span>When therefore the multitude saw that Jesus was not there, nor his disciples, they took shipping, and came to Capharnaum, seeking for Jesus.
+                    <span class="verse-num">25</span>And when they had found him on the other side of the sea, they said to him: Rabbi, when camest thou hither?
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">26</span>Jesus answered them, and said: Amen, amen I say to you, you seek me, not because you have seen miracles, but because you did eat of the loaves, and were filled.
+                    <span class="verse-num">27</span>Labour not for the meat which perisheth, but for that which endureth unto life everlasting, which the Son of man will give you. For him hath God, the Father, sealed.
+                    <span class="verse-num">28</span>They said therefore unto him: What shall we do, that we may work the works of God?
+                    <span class="verse-num">29</span>Jesus answered, and said to them: This is the work of God, that you believe in him whom he hath sent.
+                    <span class="verse-num">30</span>They said therefore to him: What sign therefore dost thou shew, that we may see, and may believe thee? What dost thou work?
+                    <span class="verse-num">31</span>Our fathers did eat manna in the desert, as it is written: He gave them bread from heaven to eat.
+                    <span class="verse-num">32</span>Then Jesus said to them: Amen, amen I say to you; Moses gave you not bread from heaven, but my Father giveth you the true bread from heaven.
+                    <span class="verse-num">33</span>For the bread of God is that which cometh down from heaven, and giveth life to the world.
+                    <span class="verse-num">34</span>They said therefore unto him: Lord, give us always this bread.
+                    <span class="verse-num">35</span>And Jesus said to them: I am the bread of life: he that cometh to me shall not hunger: and he that believeth in me shall never thirst.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">36</span>But I said unto you, that you also have seen me, and you believe not.
+                    <span class="verse-num">37</span>All that the Father giveth to me shall come to me; and him that cometh to me, I will not cast out.
+                    <span class="verse-num">38</span>Because I came down from heaven, not to do my own will, but the will of him that sent me.
+                    <span class="verse-num">39</span>Now this is the will of the Father who sent me: that of all that he hath given me, I should lose nothing; but should raise it up again in the last day.
+                    <span class="verse-num">40</span>And this is the will of my Father that sent me: that every one who seeth the Son, and believeth in him, may have life everlasting, and I will raise him up in the last day.
+                    <span class="verse-num">41</span>The Jews therefore murmured at him, because he had said: I am the living bread which came down from heaven.
+                    <span class="verse-num">42</span>And they said: Is not this Jesus, the son of Joseph, whose father and mother we know? How then saith he, I came down from heaven?
+                    <span class="verse-num">43</span>Jesus therefore answered, and said to them: Murmur not among yourselves.
+                    <span class="verse-num">44</span>No man can come to me, except the Father, who hath sent me, draw him; and I will raise him up in the last day.
+                    <span class="verse-num">45</span>It is written in the prophets: And they shall all be taught of God. Every one that hath heard of the Father, and hath learned, cometh to me.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">46</span>Not that any man hath seen the Father; but he who is of God, he hath seen the Father.
+                    <span class="verse-num">47</span>Amen, amen I say unto you: He that believeth in me, hath everlasting life.
+                    <span class="verse-num">48</span>I am the bread of life.
+                    <span class="verse-num">49</span>Your fathers did eat manna in the desert, and are dead.
+                    <span class="verse-num">50</span>This is the bread which cometh down from heaven; that if any man eat of it, he may not die.
+                    <span class="verse-num">51</span>I am the living bread which came down from heaven.
+                    <span class="verse-num">52</span>If any man eat of this bread, he shall live for ever; and the bread that I will give, is my flesh, for the life of the world.
+                    <span class="verse-num">53</span>The Jews therefore strove among themselves, saying: How can this man give us his flesh to eat?
+                    <span class="verse-num">54</span>Then Jesus said to them: Amen, amen I say unto you: Except you eat the flesh of the Son of man, and drink his blood, you shall not have life in you.
+                    <span class="verse-num">55</span>He that eateth my flesh, and drinketh my blood, hath everlasting life: and I will raise him up in the last day.
+                    <span class="verse-num">56</span>For my flesh is meat indeed: and my blood is drink indeed.
+                    <span class="verse-num">57</span>He that eateth my flesh, and drinketh my blood, abideth in me, and I in him.
+                    <span class="verse-num">58</span>As the living Father hath sent me, and I live by the Father; so he that eateth me, the same also shall live by me.
+                    <span class="verse-num">59</span>This is the bread that came down from heaven. Not as your fathers did eat manna, and are dead. He that eateth this bread, shall live for ever.
+                    <span class="verse-num">60</span>These things he said, teaching in the synagogue, in Capharnaum.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">61</span>Many therefore of his disciples, hearing it, said: This saying is hard, and who can hear it?
+                    <span class="verse-num">62</span>But Jesus, knowing in himself, that his disciples murmured at this, said to them: Doth this scandalize you?
+                    <span class="verse-num">63</span>If then you shall see the Son of man ascend up where he was before?
+                    <span class="verse-num">64</span>It is the spirit that quickeneth: the flesh profiteth nothing. The words that I have spoken to you, are spirit and life.
+                    <span class="verse-num">65</span>But there are some of you that believe not. For Jesus knew from the beginning, who they were that did not believe, and who he was, that would betray him.
+                    <span class="verse-num">66</span>And he said: Therefore did I say to you, that no man can come to me, unless it be given him by my Father.
+                    <span class="verse-num">67</span>After this many of his disciples went back; and walked no more with him.
+                    <span class="verse-num">68</span>Then Jesus said to the twelve: Will you also go away?
+                    <span class="verse-num">69</span>And Simon Peter answered him: Lord, to whom shall we go? thou hast the words of eternal life.
+                    <span class="verse-num">70</span>And we have believed and have known, that thou art the Christ, the Son of God.
+                    <span class="verse-num">71</span>Jesus answered them: Have not I chosen you twelve; and one of you is a devil?
+                    <span class="verse-num">72</span>Now he meant Judas Iscariot, the son of Simon: for this same was about to betray him, whereas he was one of the twelve.
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="7" id="chapter-7">
+            <div class="chapter-header">CHAPTER VII</div>
+            <div class="bible-text">
+                <p class="paragraph">
+                    <span class="verse-num">1</span>After these things Jesus walked in Galilee; for he would not walk in Judea, because the Jews sought to kill him.
+                    <span class="verse-num">2</span>Now the Jews' feast of tabernacles was at hand.
+                    <span class="verse-num">3</span>And his brethren said to him: Pass from hence, and go into Judea; that thy disciples also may see thy works which thou dost.
+                    <span class="verse-num">4</span>For there is no man that doth any thing in secret, and he himself seeketh to be known openly. If thou do these things, manifest thyself to the world.
+                    <span class="verse-num">5</span>For neither did his brethren believe in him.
+                    <span class="verse-num">6</span>Then Jesus said to them: My time is not yet come; but your time is always ready.
+                    <span class="verse-num">7</span>The world cannot hate you; but me it hateth: because I give testimony of it, that the works thereof are evil.
+                    <span class="verse-num">8</span>Go you up to this festival day, but I go not up to this festival day: because my time is not accomplished.
+                    <span class="verse-num">9</span>When he had said these things, he himself stayed in Galilee.
+                    <span class="verse-num">10</span>But after his brethren were gone up, then he also went up to the feast, not openly, but, as it were, in secret.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">11</span>The Jews therefore sought him on the festival day, and said: Where is he?
+                    <span class="verse-num">12</span>And there was much murmuring among the multitude concerning him. For some said: He is a good man. And others said: No, but he seduceth the people.
+                    <span class="verse-num">13</span>Yet no man spoke openly of him, for fear of the Jews.
+                    <span class="verse-num">14</span>Now about the midst of the feast, Jesus went up into the temple, and taught.
+                    <span class="verse-num">15</span>And the Jews wondered, saying: How doth this man know letters, having never learned?
+                    <span class="verse-num">16</span>Jesus answered them, and said: My doctrine is not mine, but his that sent me.
+                    <span class="verse-num">17</span>If any man will do the will of him; he shall know of the doctrine, whether it be of God, or whether I speak of myself.
+                    <span class="verse-num">18</span>He that speaketh of himself, seeketh his own glory: but he that seeketh the glory of him that sent him, he is true, and there is no injustice in him.
+                    <span class="verse-num">19</span>Did not Moses give you the law, and yet none of you keepeth the law?
+                    <span class="verse-num">20</span>Why seek you to kill me? The multitude answered, and said: Thou hast a devil; who seeketh to kill thee?
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">21</span>Jesus answered, and said to them: One work I have done; and you all wonder:
+                    <span class="verse-num">22</span>Therefore, Moses gave you circumcision, (not because it is of Moses, but of the fathers;) and on the sabbath day you circumcise a man.
+                    <span class="verse-num">23</span>If a man receive circumcision on the sabbath day, that the law of Moses may not be broken; are you angry at me because I have healed the whole man on the sabbath day?
+                    <span class="verse-num">24</span>Judge not according to the appearance, but judge just judgment.
+                    <span class="verse-num">25</span>Some therefore of Jerusalem said: Is not this he whom they seek to kill?
+                    <span class="verse-num">26</span>And behold, he speaketh openly, and they say nothing to him. Have the rulers known for a truth, that this is the Christ?
+                    <span class="verse-num">27</span>But we know this man, whence he is: but when the Christ cometh, no man knoweth whence he is.
+                    <span class="verse-num">28</span>Jesus therefore cried out in the temple, teaching, and saying: You both know me, and you know whence I am: and I am not come of myself; but he that sent me, is true, whom you know not.
+                    <span class="verse-num">29</span>I know him, because I am from him, and he hath sent me.
+                    <span class="verse-num">30</span>They sought therefore to apprehend him: and no man laid hands on him, because his hour was not yet come.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">31</span>But of the people many believed in him, and said: When the Christ cometh, shall he do more miracles, than these which this man doth?
+                    <span class="verse-num">32</span>The Pharisees heard the people murmuring these things concerning him: and the rulers and Pharisees sent ministers to apprehend him.
+                    <span class="verse-num">33</span>Jesus therefore said to them: Yet a little while I am with you: and then I go to him that sent me.
+                    <span class="verse-num">34</span>You shall seek me, and shall not find me: and where I am, thither you cannot come.
+                    <span class="verse-num">35</span>The Jews therefore said among themselves: Whither will he go, that we shall not find him? will he go unto the dispersed among the Gentiles, and teach the Gentiles?
+                    <span class="verse-num">36</span>What is this saying that he hath said: You shall seek me, and shall not find me; and where I am, you cannot come?
+                    <span class="verse-num">37</span>And on the last, and great day of the festivity, Jesus stood and cried, saying: If any man thirst, let him come to me, and drink.
+                    <span class="verse-num">38</span>He that believeth in me, as the scripture saith, Out of his belly shall flow rivers of living water.
+                    <span class="verse-num">39</span>Now this he said of the Spirit which they should receive, who believed in him: for as yet the Spirit was not given, because Jesus was not yet glorified.
+                    <span class="verse-num">40</span>Of that multitude therefore, when they had heard these words of his, some said: This is the prophet indeed.
+                </p>
+                <p class="paragraph">
+                    <span class="verse-num">41</span>Others said: This is the Christ. But some said: Doth the Christ come out of Galilee?
+                    <span class="verse-num">42</span>Doth not the scripture say: That Christ cometh of the seed of David, and from Bethlehem the town where David was?
+                    <span class="verse-num">43</span>So there arose a dissension among the people because of him.
+                    <span class="verse-num">44</span>And some of them would have apprehended him: but no man laid hands upon him.
+                    <span class="verse-num">45</span>The ministers therefore came to the chief priests and the Pharisees. And they said to them: Why have you not brought him?
+                    <span class="verse-num">46</span>The ministers answered: Never did man speak like this man.
+                    <span class="verse-num">47</span>The Pharisees therefore answered them: Are you also seduced?
+                    <span class="verse-num">48</span>Hath any one of the rulers believed in him, or of the Pharisees?
+                    <span class="verse-num">49</span>But this multitude, that knoweth not the law, are accursed.
+                    <span class="verse-num">50</span>Nicodemus said to them, (he that came to him by night, who was one of them:)
+                    <span class="verse-num">51</span>Doth our law judge any man, unless it first hear him, and know what he doth?
+                    <span class="verse-num">52</span>They answered, and said to him: Art thou also a Galilean? Search the scriptures, and see, that out of Galilee a prophet riseth not.
+                    <span class="verse-num">53</span>And every man returned to his own house.
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="8" id="chapter-8">
+            <div class="chapter-header">CHAPTER VIII</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="9" id="chapter-9">
+            <div class="chapter-header">CHAPTER IX</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="10" id="chapter-10">
+            <div class="chapter-header">CHAPTER X</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="11" id="chapter-11">
+            <div class="chapter-header">CHAPTER XI</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="12" id="chapter-12">
+            <div class="chapter-header">CHAPTER XII</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="13" id="chapter-13">
+            <div class="chapter-header">CHAPTER XIII</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="14" id="chapter-14">
+            <div class="chapter-header">CHAPTER XIV</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="15" id="chapter-15">
+            <div class="chapter-header">CHAPTER XV</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="16" id="chapter-16">
+            <div class="chapter-header">CHAPTER XVI</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="17" id="chapter-17">
+            <div class="chapter-header">CHAPTER XVII</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="18" id="chapter-18">
+            <div class="chapter-header">CHAPTER XVIII</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="19" id="chapter-19">
+            <div class="chapter-header">CHAPTER XIX</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="20" id="chapter-20">
+            <div class="chapter-header">CHAPTER XX</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <div class="chapter-content" data-chapter="21" id="chapter-21">
+            <div class="chapter-header">CHAPTER XXI</div>
+            <div class="bible-text">
+                <p class="paragraph" style="text-align: center; color: var(--text-medium); font-style: italic;">
+                    Chapter text loading...
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <div class="translation-note">Douay-Rheims Translation</div>
+            <div>Patristic consensus from the <em>Catena Aurea</em> of St. Thomas Aquinas</div>
+            <div style="margin-top: 8px; font-size: 12px;">Scripture → Rule of Faith → Liturgy → Church Fathers</div>
+        </footer>
+    </div>
+
+    <script>
+        let activeCommentary = null;
+        let currentChapter = 1;
+        
+        function showChapter(num) {
+            // Hide all chapters
+            document.querySelectorAll('.chapter-content').forEach(ch => {
+                ch.classList.remove('active');
+            });
+            
+            // Remove active from all buttons
+            document.querySelectorAll('.chapter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected chapter
+            document.getElementById('chapter-' + num).classList.add('active');
+            
+            // Mark button as active
+            document.querySelectorAll('.chapter-btn')[num - 1].classList.add('active');
+            
+            // Close any open commentary
+            if (activeCommentary) {
+                const prevCommentary = document.getElementById('commentary-' + activeCommentary);
+                const prevAnnotated = document.querySelector(`[data-verse="${activeCommentary}"]`);
+                if (prevCommentary) prevCommentary.classList.remove('active');
+                if (prevAnnotated) prevAnnotated.classList.remove('active');
+                activeCommentary = null;
+            }
+            
+            currentChapter = num;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        function toggleCommentary(verseNum) {
+            const commentary = document.getElementById('commentary-' + verseNum);
+            const annotated = document.querySelector(`[data-verse="${verseNum}"]`);
+            
+            if (activeCommentary && activeCommentary !== verseNum) {
+                const prevCommentary = document.getElementById('commentary-' + activeCommentary);
+                const prevAnnotated = document.querySelector(`[data-verse="${activeCommentary}"]`);
+                if (prevCommentary) {
+                    prevCommentary.classList.remove('active');
+                    prevCommentary.querySelectorAll('.expandable-header.open').forEach(h => {
+                        h.classList.remove('open');
+                        h.nextElementSibling.classList.remove('open');
+                    });
+                    prevCommentary.querySelectorAll('.father-quotes.open').forEach(q => {
+                        q.classList.remove('open');
+                    });
+                }
+                if (prevAnnotated) prevAnnotated.classList.remove('active');
+            }
+            
+            if (commentary) {
+                const isActive = commentary.classList.contains('active');
+                commentary.classList.toggle('active');
+                annotated.classList.toggle('active');
+                activeCommentary = isActive ? null : verseNum;
+                
+                if (!isActive) {
+                    setTimeout(() => {
+                        commentary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
+            }
+        }
+        
+        function toggleExpandable(header) {
+            header.classList.toggle('open');
+            const content = header.nextElementSibling;
+            content.classList.toggle('open');
+        }
+        
+        function toggleFatherQuotes(button) {
+            const quotes = button.nextElementSibling;
+            quotes.classList.toggle('open');
+            button.querySelector('span').textContent = quotes.classList.contains('open') 
+                ? 'Hide individual witnesses' 
+                : 'Show individual witnesses';
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && activeCommentary) {
+                toggleCommentary(activeCommentary);
+            }
+            // Arrow keys for chapter navigation
+            if (e.key === 'ArrowRight' && currentChapter < 21) {
+                showChapter(currentChapter + 1);
+            }
+            if (e.key === 'ArrowLeft' && currentChapter > 1) {
+                showChapter(currentChapter - 1);
+            }
+        });
+    </script>
+</body>
+</html>
