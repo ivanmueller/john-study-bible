@@ -17,6 +17,8 @@
             --fathers-bg: rgba(30, 132, 73, 0.08);
             --parallels: #1565c0;
             --parallels-bg: rgba(21, 101, 192, 0.08);
+            --conciliar: #607d8b;
+            --conciliar-bg: rgba(96, 125, 139, 0.08);
             
             --text-dark: #1a1a1a;
             --text-medium: #444;
@@ -282,6 +284,7 @@
         .section-dot.liturgy { background: var(--liturgy); }
         .section-dot.fathers { background: var(--fathers); }
         .section-dot.parallels { background: var(--parallels); }
+        .section-dot.conciliar { background: var(--conciliar); }
         
         .section-title {
             font-size: 12px;
@@ -295,6 +298,7 @@
         .section-title.liturgy { color: var(--liturgy); }
         .section-title.fathers { color: var(--fathers); }
         .section-title.parallels { color: var(--parallels); }
+        .section-title.conciliar { color: var(--conciliar); }
         
         .section-content {
             padding-left: 16px;
@@ -315,7 +319,7 @@
         }
         
         .tradition-label.west { color: #8b4513; }
-        .tradition-label.east { color: #4a148c; }
+        .tradition-label.east { color: #8b4513; }
         
         /* Expandable nested sections */
         .expandable-section {
@@ -405,6 +409,27 @@
         }
         
         .father-text {
+            font-style: italic;
+            font-size: 15px;
+        }
+        
+        .council-quote {
+            margin-bottom: 12px;
+            padding-left: 12px;
+            border-left: 2px solid var(--conciliar);
+        }
+        
+        .council-quote:last-child { margin-bottom: 0; }
+        
+        .council-name {
+            font-weight: 600;
+            color: var(--conciliar);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        
+        .council-text {
             font-style: italic;
             font-size: 15px;
         }
@@ -691,7 +716,7 @@
                             <span class="section-title ruleoffaith">Rule of Faith</span>
                         </div>
                         <div class="section-content">
-                            The Incarnation: true God became true man without ceasing to be God. The Council of Ephesus (431) used this verse to defend calling Mary "Theotokos" (God-bearer), since she bore the Word made flesh. Chalcedon (451) confessed Christ as one person in two natures, "without confusion, without change, without division, without separation."
+                            The Incarnation: true God became true man without ceasing to be God.
                         </div>
                     </div>
                     <div class="commentary-section">
@@ -712,7 +737,7 @@
                         <div class="expandable-header" onclick="toggleExpandable(this)">
                             <span class="expand-icon">▶</span>
                             <span class="section-dot fathers"></span>
-                            <span class="section-title fathers">Church Fathers</span>
+                            <span class="section-title fathers">Patristic Witness</span>
                         </div>
                         <div class="expandable-content">
                             <div class="consensus">
@@ -730,6 +755,23 @@
                                     <span class="father-name">St. Augustine (Tractates on John, 2)</span>
                                     <span class="father-text">"As our word is made voice, yet is not turned into voice; so the Word of God was made flesh, but never turned into flesh. It is by assuming another nature, not by consuming Himself in it."</span>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expandable-section">
+                        <div class="expandable-header" onclick="toggleExpandable(this)">
+                            <span class="expand-icon">▶</span>
+                            <span class="section-dot conciliar"></span>
+                            <span class="section-title conciliar">Conciliar Clarification</span>
+                        </div>
+                        <div class="expandable-content">
+                            <div class="council-quote">
+                                <span class="council-name">Council of Ephesus (431)</span>
+                                <span class="council-text">Used this verse to defend calling Mary "Theotokos" (God-bearer), since she bore the Word made flesh.</span>
+                            </div>
+                            <div class="council-quote">
+                                <span class="council-name">Council of Chalcedon (451)</span>
+                                <span class="council-text">Confessed Christ as one person in two natures, "without confusion, without change, without division, without separation."</span>
                             </div>
                         </div>
                     </div>
